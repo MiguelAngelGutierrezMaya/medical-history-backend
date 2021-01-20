@@ -1,0 +1,7 @@
+# General
+DJANGO_SETTINGS_MODULE=management_medical_history_backend.settings.production
+DJANGO_SECRET_KEY='plj!mk+bg=2!0qq37o)p6@j500(+o6+$1yq1*^dbxrlf6439zc'
+DJANGO_ADMIN_URL=admin/
+DJANGO_ALLOWED_HOSTS=siellano-api.pcaingenieria.co,siellano.pcaingenieria.co
+DJANGO_CORS_ORIGIN_WHITELIST=http://siellano-api.pcaingenieria.co
+SERVER_HOST=http://siellano.pcaingenieria.co

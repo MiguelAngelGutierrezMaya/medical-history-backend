@@ -1,0 +1,33 @@
+# Base
+pytz==2020.5
+python-slugify==4.0.1
+Pillow==8.1.0
+psycopg2==2.8.6 --no-binary psycopg2
+
+# Django
+django==2.2.17
+
+# Environment
+django-environ==0.4.5
+
+# Django REST Framework
+djangorestframework==3.12.2
+
+# Django Rest Password Reset
+django-rest-passwordreset==1.1.0
+
+# JWT
+djangorestframework-simplejwt==4.6.0
+PyJWT==2.0.0
+
+# django-filter
+django-filter==2.4.0
+
+# Passwords security
+argon2-cffi==20.1.0
+
+# Static files
+whitenoise==5.2.0
+
+# Django CORS headers
+django-cors-headers==3.6.0

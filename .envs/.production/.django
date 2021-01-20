@@ -1,0 +1,7 @@
+# General
+DJANGO_SETTINGS_MODULE=management_medical_history_backend.settings.production
+DJANGO_SECRET_KEY=')q#g0_8alg=c3+5z(#tsg#!w_pi97h6i4%31&t2s)^^z%%57f2'
+DJANGO_ADMIN_URL=admin/
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=api.em-dev.com.co
+DJANGO_CORS_ORIGIN_WHITELIST=http://localhost:3000

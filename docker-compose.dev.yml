@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/dev/django/Dockerfile
+    image: siellano_medical_history_backend_dev
+    container_name: siellano_medical_history_backend_dev
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.postgres
+    expose:
+      - 80
+    external_links:
+      - postgres-prod:postgres
+    networks:
+      - proxy-containers
+    environment:
+      - "VIRTUAL_HOST=siellano-api.pcaingenieria.co"
+    command: /start
+
+networks:
+  proxy-containers:
+    external: true
