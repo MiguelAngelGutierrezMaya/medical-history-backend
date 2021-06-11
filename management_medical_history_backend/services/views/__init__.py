@@ -1,0 +1,18 @@
+from .services_view import (
+    NacionalityView,
+    CountryView,
+    DepartmentView,
+    CityView,
+    UsualOccupationView,
+    SpecialPopulationView,
+    SexualOrientationView,
+    SocialSecuritySchemeView,
+    EpsView,
+    CivilStatusView,
+    ScholarshipView,
+    EthnicGroupView,
+    TypeDegreeDisabilityView,
+    RelationshipPersonInChargeView,
+    HcOpenPlaceView,
+    HcTransferToView,
+)

@@ -2,6 +2,7 @@
 DJANGO_SETTINGS_MODULE=management_medical_history_backend.settings.local
 DJANGO_SECRET_KEY=')q#g0_8alg=c3+5z(#tsg#!w_pi97h6i4%31&t2s)^^z%%57f2'
 DJANGO_ADMIN_URL=admin/
-DJANGO_ALLOWED_HOSTS=localhost,0d895c4d2e45.ngrok.io
-DJANGO_CORS_ORIGIN_WHITELIST=http://localhost:3000
-SERVER_HOST=http://localhost:9010
+DJANGO_ALLOWED_HOSTS=localhost
+DJANGO_TOKEN_DURATION=10
+DJANGO_CORS_ORIGIN_WHITELIST=http://localhost:3001
+SIELLANO_WEB_URL=http://localhost:3001

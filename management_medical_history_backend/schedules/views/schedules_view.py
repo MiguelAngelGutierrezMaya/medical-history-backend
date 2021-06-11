@@ -1,0 +1,247 @@
+"""Users views."""
+
+# Django REST Framework
+from re import L
+from rest_framework import status, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+# Models
+from management_medical_history_backend.schedules.models import Availability, Appointment
+# from management_medical_history_backend.services.models import Service
+
+# Serializers
+from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer
+
+# Utils
+from management_medical_history_backend.utils.permissions import AccessPermission
+from management_medical_history_backend.utils import Constants
+from datetime import datetime, timedelta
+
+
+class AvailabilitiesRecordsView(APIView):
+    """List professional's availabilities"""
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+
+    def get(self, request):
+        availabilities = Availability.objects.filter(professional=request.user).order_by('weekday_order', 'start_date')
+        serializer = AvailabilitySerializer(availabilities, many=True)
+        return Response(serializer.data)
+
+    def put(self, request):
+        """Handle HTTP PUT request."""
+        for i in range(0, len(request.data)):
+            request.data[i]['professional'] = request.user.id
+            if request.data[i].get('id') is not None:
+                availability = Availability.objects.get(pk=request.data[i].get('id'))
+                if request.data[i].get('action') == 'delete':
+                    availability.delete()
+                else:
+                    serializer = AvailabilitySerializer(availability, data=request.data[i])
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer = AvailabilitySerializer(data=request.data[i])
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ScheduleRecordsView(APIView):
+    """Add service to the professional"""
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+
+    def _getWeekDay(self, weekday):
+        if (weekday == 7):
+            return 0
+        return weekday
+
+    def _getDate(self, date, ref_date):
+        new_date = date - timedelta(days=(date.isoweekday() % 7)) + \
+            timedelta(days=self._getWeekDay(ref_date.isoweekday()))
+        aux = datetime(year=ref_date.year, month=ref_date.month, day=ref_date.day)
+        result = new_date - aux
+        resp = ref_date + timedelta(days=result.days)
+        return resp
+
+    def _notAvailable(self, index, list, new_list, date):
+        if not list[index].can_work:
+            new_list.append({
+                'availabilityId': list[index].id,
+                'title': 'No disponible',
+                'startDate': self._getDate(date, list[index].start_date),
+                'endDate': self._getDate(date, list[index].end_date),
+                'all_day': True,
+                'groupId': 0,
+                'attentionMethod': 4,
+            })
+        elif index == 0 and len(list) == 1:
+            start_date = list[index].start_date
+            end_date = list[index].end_date
+            if not (start_date.hour == 6 and start_date.minute == 0):
+                if((start_date.hour != 6 and start_date.minute != 0)
+                        or (start_date.hour == 6 and start_date.minute != 0)
+                        or (start_date.hour != 6 and start_date.minute == 0)):
+                    start_date = datetime(start_date.year, start_date.month, start_date.day, 6)
+                    end_date = list[index].start_date
+                new_list.append({
+                    'availabilityId': list[index].id,
+                    'title': 'No disponible',
+                    'startDate': self._getDate(date, start_date),
+                    'endDate': self._getDate(date, end_date),
+                    'all_day': False,
+                    'groupId': 0,
+                    'attentionMethod': 4,
+                })
+            start_date = list[index].end_date
+            end_date = datetime(start_date.year, start_date.month, start_date.day, 23, 59)
+            new_list.append({
+                'availabilityId': list[index].id,
+                'title': 'No disponible',
+                'startDate': self._getDate(date, start_date),
+                'endDate': self._getDate(date, end_date),
+                'all_day': False,
+                'groupId': 0,
+                'attentionMethod': 4,
+            })
+        elif index == 0:
+            start_date = list[index].start_date
+            end_date = list[index].end_date
+            if not (start_date.hour == 6 and start_date.minute == 0):
+                if((start_date.hour != 6 and start_date.minute != 0)
+                        or (start_date.hour == 6 and start_date.minute != 0)
+                        or (start_date.hour != 6 and start_date.minute == 0)):
+                    start_date = datetime(start_date.year, start_date.month, start_date.day, 6)
+                    end_date = list[index].start_date
+                new_list.append({
+                    'availabilityId': list[index].id,
+                    'title': 'No disponible',
+                    'startDate': self._getDate(date, start_date),
+                    'endDate': self._getDate(date, end_date),
+                    'all_day': False,
+                    'groupId': 0,
+                    'attentionMethod': 4,
+                })
+        elif index == len(list) - 1:
+            start_date = list[index - 1].end_date
+            end_date = list[index].start_date
+            new_list.append({
+                'availabilityId': list[index].id,
+                'title': 'No disponible',
+                'startDate': self._getDate(date, start_date),
+                'endDate': self._getDate(date, end_date),
+                'all_day': False,
+                'groupId': 0,
+                'attentionMethod': 4,
+            })
+            start_date = list[index].end_date
+            end_date = datetime(start_date.year, start_date.month, start_date.day, 23, 59)
+            new_list.append({
+                'availabilityId': list[index].id,
+                'title': 'No disponible',
+                'startDate': self._getDate(date, start_date),
+                'endDate': self._getDate(date, end_date),
+                'all_day': False,
+                'groupId': 0,
+                'attentionMethod': 4,
+            })
+        else:
+            start_date = list[index - 1].end_date
+            end_date = list[index].start_date
+            new_list.append({
+                'availabilityId': list[index].id,
+                'title': 'No disponible',
+                'startDate': self._getDate(date, start_date),
+                'endDate': self._getDate(date, end_date),
+                'all_day': False,
+                'groupId': 0,
+                'attentionMethod': 4,
+            })
+
+    def get(self, request):
+        """Handle HTTP GET requ est."""
+        start_date = request.query_params.get('startDate')
+        end_date = request.query_params.get('endDate')
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        except Exception:
+            return Response('Fechas no válida', status=status.HTTP_400_BAD_REQUEST)
+
+        list = []
+        for i in range(0, 7):
+            availabilities = Availability.objects.filter(
+                professional=request.user, weekday_order=i
+            ).order_by('weekday_order', 'start_date')
+            for j in range(0, len(availabilities)):
+                self._notAvailable(j, availabilities, list, start_date)
+
+        appointments = Appointment.objects.filter(
+            start_date__gte=start_date, end_date__lte=end_date, status=Constants.APPOINTMENT_PAID
+        ) | Appointment.objects.filter(
+            start_date__gte=start_date, end_date__lte=end_date, status=Constants.APPOINTMENT_CANCELED
+        )
+        for item in appointments:
+            patient = ''
+            if (item.patient):
+                patient = '{} {}'.format(item.patient.first_name, item.patient.last_name)
+            list.append({
+                'appointmentId': item.id,
+                'title': item.service.global_service.title,
+                'patient': patient,
+                'startDate': item.start_date,
+                'endDate': item.end_date,
+                'alDay': False,
+                'groupId': 0,
+                'status': item.status,
+                'duration': item.service.duration,
+            })
+        return Response(list)
+
+    def patch(self, request):
+        """Handle HTTP PATCH request."""
+        try:
+            appointment = Appointment.objects.get(pk=request.data.get('pk'))
+            serializer = AppointmentSerializer(
+                appointment,
+                data=request.data.get('data'),
+                partial=True
+            )
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Appointment.DoesNotExist:
+            return Response('Cita no encontrada', status=status.HTTP_400_BAD_REQUEST)
+
+
+class RescheduleDetailView(APIView):
+    """Add service to the professional"""
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+
+    def put(self, request):
+        """Handle HTTP PUT request."""
+        try:
+            # service = Service.objects.get(
+            #     professional=request.user,
+            #     global_service__title=request.data.get('service'),
+            #     attention_method__id=request.data.get('attention_method'),
+            #     is_enabled=True,
+            # )
+            appointment = Appointment.objects.get(pk=request.data.get('appointmentId'))
+            # appointment.service = service
+            appointment.start_date = datetime.strptime(request.data.get('startDate'), '%Y-%m-%d %H:%M')
+            appointment.end_date = appointment.start_date + timedelta(minutes=30)
+            appointment.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # except Service.DoesNotExist:
+        #     return Response({'msg': 'Servicio no encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+        except Appointment.DoesNotExist:
+            return Response({'msg': 'Cita no encontrada'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            print(ex)
+            return Response({'msg': 'Se produjo un error inesperado'}, status=status.HTTP_400_BAD_REQUEST)

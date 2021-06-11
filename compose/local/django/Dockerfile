@@ -10,13 +10,13 @@ RUN set -ex \
   tar \
   libpq-dev
 
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+# RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+# RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 RUN apt-get update \
   # psycopg2 dependencies
-  && apt-get install -y postgresql-12 musl-dev \
+  # && apt-get install -y postgresql-12 musl-dev \
   # Pillow dependencies
   && apt-get install -y libjpeg-dev libghc-zlib-dev tk-dev tcl-dev \
   # CFFI dependencies
@@ -24,7 +24,9 @@ RUN apt-get update \
   # Translations dependencies
   && apt-get install -y gettext \
   # Otros
-  && apt-get install -y gcc libc-dev python3-dev g++
+  && apt-get install -y gcc libc-dev python3-dev g++ git zsh
+
+RUN sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" -y
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -40,4 +42,4 @@ RUN chmod +x /start
 
 WORKDIR /app
 
-ENTRYPOINT ["/entrypoint"]
+# ENTRYPOINT ["/entrypoint"]

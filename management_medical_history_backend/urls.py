@@ -14,7 +14,9 @@ admin.autodiscover()
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    url(r'^api/password-reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    # path('', include(('management_medical_history_backend.users.urls', 'users'), namespace='users')),
+    path('', include(('management_medical_history_backend.users.urls', 'users'), namespace='users')),
+    path('', include(('management_medical_history_backend.services.urls', 'services'), namespace='services')),
+    path('', include(('management_medical_history_backend.medical_history.urls', 'medical_history'), namespace='medical_history')),
+    path('', include(('management_medical_history_backend.schedules.urls', 'schedules'), namespace='schedules')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -27,9 +27,30 @@ USE_TZ = False
 
 # DATABASES
 DATABASES = {
-    'default': env.db('DATABASE_URL'),
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': env('MONGO_INITDB_DATABASE'),
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': env('MONGODB_HOST'),
+            'port': env.int('MONGODB_PORT', 27017),
+            'username': env('MONGO_INITDB_ROOT_USERNAME'),
+            'password': env('MONGO_INITDB_ROOT_PASSWORD'),
+            'authSource': 'admin',
+            'authMechanism': 'SCRAM-SHA-1'
+        },
+        'LOGGING': {
+            'version': 1,
+            'loggers': {
+                'djongo': {
+                    'level': 'DEBUG',
+                    'propagate': False,
+                }
+            },
+        },
+    },
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+# DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # URLs
 ROOT_URLCONF = 'management_medical_history_backend.urls'
@@ -38,7 +59,7 @@ ROOT_URLCONF = 'management_medical_history_backend.urls'
 WSGI_APPLICATION = 'management_medical_history_backend.wsgi.application'
 
 # Users & Authentication.
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Apps
 DJANGO_APPS = [
@@ -53,11 +74,13 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
-    'django_rest_passwordreset',
 ]
 
 LOCAL_APPS = [
-    # 'management_medical_history_backend.users.apps.UsersAppConfig',
+    'management_medical_history_backend.users.apps.UsersAppConfig',
+    'management_medical_history_backend.services.apps.ServicesAppConfig',
+    'management_medical_history_backend.medical_history.apps.MedicalHistoryAppConfig',
+    'management_medical_history_backend.schedules.apps.SchedulesAppConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -151,13 +174,13 @@ X_FRAME_OPTIONS = 'DENY'
 # Admin
 ADMIN_URL = 'admin/'
 ADMINS = [
-    ("""Edwin Castaño""", 'egutierrez@pcasistencias.com'),
+    ("""Edwin Castaño""", 'edwin.javier.castano@gmail.com'),
 ]
 MANAGERS = ADMINS
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'egutierrez@pcasistencias.com'
+EMAIL_HOST_USER = 'edwin.javier.castano@gmail.com'
 EMAIL_HOST_PASSWORD = 'e1h18t5c'
 EMAIL_PORT = 587
 
