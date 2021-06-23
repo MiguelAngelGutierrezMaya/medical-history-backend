@@ -8,6 +8,7 @@ from rest_framework.response import Response
 # Models
 from management_medical_history_backend.medical_history.models import (
     MedicalHistory,
+    UserMedicalHistory,
     Group,
     Item,
     Component,
@@ -16,6 +17,7 @@ from management_medical_history_backend.medical_history.models import (
 # Serializers
 from management_medical_history_backend.medical_history.serializers import (
     MedicalHistorySerializer,
+    UserMedicalHistorySerializer,
     MedicalHistorySimpleSerializer,
 )
 
@@ -73,3 +75,11 @@ class MedicalHistoryConfigDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except MedicalHistory.DoesNotExist:
             return Response({'msg': 'No se econtró la Historia Clínica solicitada'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserMedicalHistoryView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        list = UserMedicalHistory.objects.filter(user_id=request.GET['user_id'])
+        serializer = UserMedicalHistorySerializer(list, many=True)
+        return Response(serializer.data)

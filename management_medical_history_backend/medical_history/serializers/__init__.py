@@ -3,3 +3,5 @@ from .item_serializer import ItemSerializer
 from .group_serializer import GroupSerializer
 from .medical_history_serializer import MedicalHistorySerializer
 from .medical_history_simple_serializer import MedicalHistorySimpleSerializer
+from .user_medical_history_serializer import UserMedicalHistorySerializer
+from .item_value_serializer import ItemValueSerializer
