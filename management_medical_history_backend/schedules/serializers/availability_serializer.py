@@ -18,6 +18,7 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             end_date=data.get('end_date'),
             can_work=data.get('can_work'),
             all_day=data.get('all_day', False),
+            appointment_duration=data.get('appointment_duration'),
             professional=data.get('professional'),
         )
         return availability

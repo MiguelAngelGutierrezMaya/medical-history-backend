@@ -24,7 +24,19 @@ class AvailabilitiesRecordsView(APIView):
     permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def get(self, request):
-        availabilities = Availability.objects.filter(professional=request.user).order_by('weekday_order', 'start_date')
+        start_date = request.query_params.get('startDate')
+        end_date = request.query_params.get('endDate')
+        try:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        except Exception:
+            return Response('Fechas no válida', status=status.HTTP_400_BAD_REQUEST)
+
+        availabilities = Availability.objects.filter(
+            start_date__gte=start_date,
+            end_date__lte=(end_date + timedelta(days=1)),
+            professional=request.user
+        ).order_by('weekday_order', 'start_date')
         serializer = AvailabilitySerializer(availabilities, many=True)
         return Response(serializer.data)
 
@@ -175,11 +187,13 @@ class ScheduleRecordsView(APIView):
         list = []
         for i in range(0, 7):
             availabilities = Availability.objects.filter(
-                professional=request.user, weekday_order=i
+                start_date__gte=start_date,
+                end_date__lte=(end_date + timedelta(days=1)),
+                professional=request.user,
+                weekday_order=i
             ).order_by('weekday_order', 'start_date')
             for j in range(0, len(availabilities)):
                 self._notAvailable(j, availabilities, list, start_date)
-
         appointments = Appointment.objects.filter(
             start_date__gte=start_date, end_date__lte=end_date, status=Constants.APPOINTMENT_PAID
         ) | Appointment.objects.filter(
@@ -191,14 +205,14 @@ class ScheduleRecordsView(APIView):
                 patient = '{} {}'.format(item.patient.first_name, item.patient.last_name)
             list.append({
                 'appointmentId': item.id,
-                'title': item.service.global_service.title,
+                'title': item.title,
                 'patient': patient,
                 'startDate': item.start_date,
                 'endDate': item.end_date,
                 'alDay': False,
                 'groupId': 0,
                 'status': item.status,
-                'duration': item.service.duration,
+                'duration': item.appointment_duration,
             })
         return Response(list)
 
@@ -226,16 +240,10 @@ class RescheduleDetailView(APIView):
     def put(self, request):
         """Handle HTTP PUT request."""
         try:
-            # service = Service.objects.get(
-            #     professional=request.user,
-            #     global_service__title=request.data.get('service'),
-            #     attention_method__id=request.data.get('attention_method'),
-            #     is_enabled=True,
-            # )
             appointment = Appointment.objects.get(pk=request.data.get('appointmentId'))
-            # appointment.service = service
+            appointment.appointment_duration = int(request.data.get('duration', appointment.appointment_duration))
             appointment.start_date = datetime.strptime(request.data.get('startDate'), '%Y-%m-%d %H:%M')
-            appointment.end_date = appointment.start_date + timedelta(minutes=30)
+            appointment.end_date = appointment.start_date + timedelta(minutes=int(request.data.get('duration', appointment.appointment_duration)))
             appointment.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         # except Service.DoesNotExist:
@@ -244,4 +252,4 @@ class RescheduleDetailView(APIView):
             return Response({'msg': 'Cita no encontrada'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
             print(ex)
-            return Response({'msg': 'Se produjo un error inesperado'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'El valor de la duración debe ser un número entero'}, status=status.HTTP_400_BAD_REQUEST)

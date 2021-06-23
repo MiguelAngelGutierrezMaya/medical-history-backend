@@ -27,7 +27,7 @@ class Availability(AuditModel):
 
     all_day = models.BooleanField(default=False)
 
-    # appointment_duration = models.PositiveIntegerField()
+    appointment_duration = models.PositiveIntegerField()
 
     def __str__(self):
         """Return availability's str representation."""
