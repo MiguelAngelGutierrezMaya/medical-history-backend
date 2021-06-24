@@ -1,25 +1,43 @@
 version: "3"
 
+volumes:
+  dev_mongo_data: {}
+
 services:
+  mongo:
+    build:
+      context: .
+      dockerfile: ./compose/production/mongo/Dockerfile
+    image: siellano_mongo_dev
+    container_name: siellano_mongo_dev
+    volumes:
+      - dev_mongo_data:/data/db
+    env_file:
+      - ./.envs/.dev/.mongo
+    ports:
+      - "27017:27017"
+    command: mongod
+
   django: &django
     build:
       context: .
       dockerfile: ./compose/dev/django/Dockerfile
-    image: siellano_medical_history_backend_dev
-    container_name: siellano_medical_history_backend_dev
+    image: siellano_historical_medicals_backend_dev
+    container_name: siellano_historical_medicals_backend_dev
     volumes:
       - .:/app
     env_file:
       - ./.envs/.dev/.django
-      - ./.envs/.dev/.postgres
+      - ./.envs/.dev/.mongo
     expose:
       - 80
-    external_links:
-      - postgres-prod:postgres
+    depends_on:
+      - mongo
     networks:
       - proxy-containers
     environment:
       - "VIRTUAL_HOST=siellano-api.pcaingenieria.co"
+      - "LETSENCRYPT_HOST=siellano-api.pcaingenieria.co"
     command: /start
 
 networks:
