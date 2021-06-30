@@ -13,7 +13,6 @@ class UserMedicalHistory(AuditModel):
     date = models.DateTimeField(null=False)
 
     # Relations
-
     professional = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, related_name='%(class)s_professional')
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='%(class)s_user')
     medical_history = models.ForeignKey('medical_history.MedicalHistory', on_delete=models.CASCADE)

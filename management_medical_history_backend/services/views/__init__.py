@@ -1,6 +1,8 @@
 from .services_view import (
     NacionalityView,
     CountryView,
+    DiagnoseView,
+    CategoryView,
     DepartmentView,
     CityView,
     UsualOccupationView,

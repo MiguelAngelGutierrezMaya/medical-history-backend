@@ -23,6 +23,7 @@ class UserLoginTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         profile = Profile.objects.get(user=user)
         obj = {
+            'id': user.id,
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
