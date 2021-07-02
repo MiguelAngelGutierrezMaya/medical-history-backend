@@ -33,8 +33,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
     """UserMedicalHistorySignUpSerializer model serializer."""
 
     itemsValue = serializers.ListField()
-    diagnoses = serializers.ListField()
-    categories = serializers.ListField()
+    diagnosesCategories = serializers.ListField()
     date = serializers.DateTimeField()
     medical_history_id = serializers.IntegerField()
     professional_id = serializers.IntegerField()
@@ -43,19 +42,12 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
     def create(self, data):
         aux = data
         itemsValue = data.pop('itemsValue')
-        diagnoses = data.pop('diagnoses')
-        categories = data.pop('categories')
+        diagnosesCategories = data.pop('diagnosesCategories')
         user_medical_history = UserMedicalHistory.objects.create(**data)
-        for diagnose in diagnoses:
+        for diagnoseCategory in diagnosesCategories:
             ItemValue.objects.create(
-                value=diagnose,
-                type='diagnoses',
-                user_medical_history_id=user_medical_history.id
-            )
-        for category in categories:
-            ItemValue.objects.create(
-                value=category,
-                type='categories',
+                value=diagnoseCategory,
+                type='diagnosesCategories',
                 user_medical_history_id=user_medical_history.id
             )
         for itemValue in itemsValue:
@@ -67,8 +59,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
             )
 
         aux['itemsValue'] = itemsValue
-        aux['diagnoses'] = diagnoses
-        aux['categories'] = categories
+        aux['diagnosesCategories'] = diagnosesCategories
         return aux
 
     class Meta:
@@ -76,8 +67,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
         model = UserMedicalHistory
         fields = (
             'itemsValue',
-            'diagnoses',
-            'categories',
+            'diagnosesCategories',
             'date',
             'medical_history_id',
             'professional_id',
