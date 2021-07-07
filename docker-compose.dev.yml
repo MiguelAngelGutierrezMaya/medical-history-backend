@@ -17,6 +17,8 @@ services:
     ports:
       - "27017:27017"
     command: mongod
+    networks:
+      - proxy-containers
 
   django: &django
     build:

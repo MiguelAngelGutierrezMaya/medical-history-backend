@@ -11,8 +11,8 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 CORS_ORIGIN_WHITELIST = env.list('DJANGO_CORS_ORIGIN_WHITELIST')
 
 # Databases
-DATABASES['default'] = env.db('DATABASE_URL')  # NOQA
-DATABASES['default']['ATOMIC_REQUESTS'] = True  # NOQA
+# DATABASES['default'] = env.db('DATABASE_URL')  # NOQA
+# DATABASES['default']['ATOMIC_REQUESTS'] = True  # NOQA
 DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # NOQA
 
 # Cache

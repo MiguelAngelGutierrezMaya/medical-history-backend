@@ -7,7 +7,7 @@ import environ
 from datetime import timedelta
 
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path('management_medical_history_backend')
+APPS_DIR = ROOT_DIR
 
 env = environ.Env()
 
@@ -124,7 +124,7 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = []
 
 # Static files
-STATIC_ROOT = str(APPS_DIR('/static'))
+STATIC_ROOT = str(APPS_DIR('static'))
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     str(APPS_DIR.path('static')),
