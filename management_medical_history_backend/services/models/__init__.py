@@ -14,3 +14,5 @@ from .type_degree_disability import TypeDegreeDisability
 from .relationship_person_in_charge import RelationshipPersonInCharge
 from .hc_open_place import HcOpenPlace
 from .hc_transfer_to import HcTransferTo
+from .diagnose import Diagnose
+from .category import Category

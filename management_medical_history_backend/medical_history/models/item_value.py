@@ -11,9 +11,10 @@ class ItemValue(AuditModel):
     """ItemValue model."""
 
     value = models.CharField(max_length=200)
+    type = models.CharField(max_length=80)
 
     # Relations
-    item = models.ForeignKey('medical_history.Item', on_delete=models.CASCADE)
+    item = models.ForeignKey('medical_history.Item', on_delete=models.CASCADE, null=True)
     user_medical_history = models.ForeignKey('medical_history.UserMedicalHistory', on_delete=models.CASCADE)
 
     def __str__(self):

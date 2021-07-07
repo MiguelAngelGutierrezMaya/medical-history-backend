@@ -11,6 +11,8 @@ from management_medical_history_backend.services.views import (
     NacionalityView,
     CountryView,
     DepartmentView,
+    DiagnoseView,
+    CategoryView,
     CityView,
     UsualOccupationView,
     SpecialPopulationView,
@@ -30,6 +32,8 @@ from management_medical_history_backend.services.views import (
 urlpatterns = [
     path('api/nacionalities/', NacionalityView.as_view(), name='nacionalities'),
     path('api/countries/', CountryView.as_view(), name='countries'),
+    path('api/diagnoses/', DiagnoseView.as_view(), name='diagnoses'),
+    path('api/categories/', CategoryView.as_view(), name='categories'),
     path('api/deparments/<int:country_id>', DepartmentView.as_view(), name='deparments'),
     path('api/cities/<int:department_id>', CityView.as_view(), name='cities'),
     path('api/usual-occupation/', UsualOccupationView.as_view(), name='usual_occupation'),

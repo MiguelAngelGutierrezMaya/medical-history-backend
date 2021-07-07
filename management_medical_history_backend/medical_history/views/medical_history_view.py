@@ -11,13 +11,17 @@ from management_medical_history_backend.medical_history.models import (
     UserMedicalHistory,
     Group,
     Item,
+    ItemValue,
     Component,
+    user_medical_history,
 )
 
 # Serializers
 from management_medical_history_backend.medical_history.serializers import (
     MedicalHistorySerializer,
     UserMedicalHistorySerializer,
+    UserMedicalHistorySignUpSerializer,
+    ItemValueSerializer,
     MedicalHistorySimpleSerializer,
 )
 
@@ -83,3 +87,23 @@ class UserMedicalHistoryView(APIView):
         list = UserMedicalHistory.objects.filter(user_id=request.GET['user_id'])
         serializer = UserMedicalHistorySerializer(list, many=True)
         return Response(serializer.data)
+
+    def post(self, request):
+        """Handle HTTP POST request."""
+        serializer = UserMedicalHistorySignUpSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserMedicalHistoryDetailView(APIView):
+    def get(self, request, umh_id):
+        """Handle HTTP GET request."""
+        try:
+            umh = UserMedicalHistory.objects.get(id=umh_id)
+            itemsValue = ItemValue.objects.filter(user_medical_history=umh)
+            serializer = ItemValueSerializer(itemsValue, many=True)
+            return Response(serializer.data)
+        except UserMedicalHistory.DoesNotExist:
+            return Response({'msg': 'No se econtró la Historia Clínica de usuario solicitada'}, status=status.HTTP_400_BAD_REQUEST)

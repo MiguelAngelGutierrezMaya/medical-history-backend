@@ -10,6 +10,8 @@ from management_medical_history_backend.services.models import (
     Nacionality,
     Country,
     Department,
+    Diagnose,
+    Category,
     City,
     UsualOccupation,
     SpecialPopulation,
@@ -30,6 +32,8 @@ from management_medical_history_backend.services.serializers import (
     NacionalitySerializer,
     CountrySerializer,
     DepartmentSerializer,
+    DiagnoseSerializer,
+    CategorySerializer,
     CitySerializer,
     UsualOccupationSerializer,
     SpecialPopulationSerializer,
@@ -75,6 +79,22 @@ class CityView(APIView):
         """Handle HTTP GET request."""
         cities = City.objects.filter(department__id=department_id)
         serializer = CitySerializer(cities, many=True)
+        return Response(serializer.data)
+
+
+class DiagnoseView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        diagnoses = Diagnose.objects.all()
+        serializer = DiagnoseSerializer(diagnoses, many=True)
+        return Response(serializer.data)
+
+
+class CategoryView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
 

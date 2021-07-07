@@ -22,6 +22,7 @@ class ItemValueSerializer(serializers.ModelSerializer):
         model = ItemValue
         fields = [
             'value',
+            'type',
             'item',
             'user_medical_history'
         ]
