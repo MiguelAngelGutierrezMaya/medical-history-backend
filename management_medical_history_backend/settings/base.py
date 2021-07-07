@@ -7,7 +7,7 @@ import environ
 from datetime import timedelta
 
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR
+APPS_DIR = ROOT_DIR.path('management_medical_history_backend')
 
 env = environ.Env()
 
