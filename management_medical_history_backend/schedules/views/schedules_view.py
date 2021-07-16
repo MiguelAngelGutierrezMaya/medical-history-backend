@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 # Models
 from management_medical_history_backend.schedules.models import Availability, Appointment
-# from management_medical_history_backend.services.models import Service
+from management_medical_history_backend.users.models import User
 
 # Serializers
 from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer
@@ -17,6 +17,7 @@ from management_medical_history_backend.schedules.serializers import Availabilit
 from management_medical_history_backend.utils.permissions import AccessPermission
 from management_medical_history_backend.utils import Constants
 from datetime import datetime, timedelta
+from django.utils import timezone, dateformat
 
 
 class AvailabilitiesRecordsView(APIView):
@@ -61,6 +62,87 @@ class AvailabilitiesRecordsView(APIView):
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AvailabilitiesView(APIView):
+    """List professional's availabilities"""
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+
+    def get(self, request):
+        if 'date' in request.GET:
+            now = datetime. strptime(request.GET['date'].replace("T", " "), '%Y-%m-%d %H:%M:%S')
+        else:
+            now = timezone.now()
+        initial_date = datetime.strftime(now, "%Y-%m-%d")
+        final_date = dateformat.format(now + timedelta(days=7), 'Y-m-d')
+        instance = User.objects.get(pk=request.GET['user_id'])
+        data = []
+        temp_weekday = ''
+
+        if (instance.role == Constants.ROLE_PROFESSIONAL):
+
+            availabilities = Availability.objects.filter(
+                professional=instance.id, start_date__gte=initial_date,
+                end_date__lte=final_date
+            ).order_by('start_date')
+
+            for aval in availabilities:
+
+                temp_date = datetime.strftime(aval.start_date, "%Y-%m-%d")
+                if aval.all_day is True or aval.appointment_duration == 0:
+
+                    # No tiene agenda disponible
+                    data.append({
+                        'weekday': aval.weekday,
+                        'all_day': aval.all_day,
+                        'date': temp_date,
+                        'duration': aval.appointment_duration,
+                        'data': []
+                    })
+
+                else:
+
+                    delta = timedelta(minutes=int(aval.appointment_duration))
+
+                    if temp_weekday != aval.weekday:
+                        temp_weekday = aval.weekday
+                        temp_data = []
+                        temp_available = []
+                    else:
+                        data = data[0:len(data)-1]
+
+                    start_date = datetime.combine(
+                        datetime.date(aval.start_date),
+                        datetime.time(aval.start_date)
+                    )
+                    end_date = datetime.combine(
+                        datetime.date(aval.end_date),
+                        datetime.time(aval.end_date)
+                    )
+
+                    while start_date <= end_date:
+                        temp_data.append(datetime.strftime(start_date, "%H:%M"))
+                        appointment = Appointment.objects.filter(professional=instance, start_date__gte=start_date,
+                                                                 end_date__lte=(start_date + delta)).first()
+                        if appointment is None:
+                            temp_available.append(True)
+                        else:
+                            temp_available.append(False)
+                        # Add minutes to range date
+                        start_date = start_date + delta
+
+                    # Guardamos la información recogida
+                    info = {
+                        'weekday': temp_weekday,
+                        'all_day': aval.all_day,
+                        'date': temp_date,
+                        'duration': aval.appointment_duration,
+                        'data': temp_data,
+                        'available': temp_available
+                    }
+                    data.append(info)
+
+        return Response(data)
 
 
 class ScheduleRecordsView(APIView):
@@ -243,7 +325,8 @@ class RescheduleDetailView(APIView):
             appointment = Appointment.objects.get(pk=request.data.get('appointmentId'))
             appointment.appointment_duration = int(request.data.get('duration', appointment.appointment_duration))
             appointment.start_date = datetime.strptime(request.data.get('startDate'), '%Y-%m-%d %H:%M')
-            appointment.end_date = appointment.start_date + timedelta(minutes=int(request.data.get('duration', appointment.appointment_duration)))
+            appointment.end_date = appointment.start_date + \
+                timedelta(minutes=int(request.data.get('duration', appointment.appointment_duration)))
             appointment.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         # except Service.DoesNotExist:

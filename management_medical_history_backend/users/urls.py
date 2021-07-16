@@ -15,10 +15,12 @@ from management_medical_history_backend.users.views import (
     ResetPasswordView,
     ConfirmTokenView,
     IndexCardHolderView,
+    UserView
 )
 
 
 urlpatterns = [
+    path('api/user/', UserView.as_view(), name='user'),
     path('api/login/', UserLoginTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),

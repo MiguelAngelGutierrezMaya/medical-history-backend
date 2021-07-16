@@ -126,6 +126,17 @@ class ConfirmTokenView(APIView):
         return Response({'msg': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        if 'role' in request.GET:
+            user = User.objects.filter(role=request.GET['role'])
+        else:
+            user = User.objects.all()
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+
+
 class IndexCardHolderView(APIView):
     def get(self, request):
         """Handle HTTP GET request."""

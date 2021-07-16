@@ -4,3 +4,8 @@ from .city_admin import CityAdmin
 from .nacionality_admin import NacionalityAdmin
 from .category_admin import CategoryAdmin
 from .diagnose_admin import DiagnoseAdmin
+from .type_request_admin import TypeRequestAdmin
+from .state_admin import StateAdmin
+from .program_admin import ProgramAdmin
+from .production_center_admin import ProductionCenterAdmin
+from .ips_admin import IpsAdmin

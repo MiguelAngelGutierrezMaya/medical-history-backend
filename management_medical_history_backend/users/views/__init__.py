@@ -3,4 +3,5 @@ from .users_view import (
     ResetPasswordView,
     ConfirmTokenView,
     IndexCardHolderView,
+    UserView
 )

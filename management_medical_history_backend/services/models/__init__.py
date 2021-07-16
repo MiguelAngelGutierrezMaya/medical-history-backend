@@ -16,3 +16,8 @@ from .hc_open_place import HcOpenPlace
 from .hc_transfer_to import HcTransferTo
 from .diagnose import Diagnose
 from .category import Category
+from .ips import Ips
+from .production_center import ProductionCenter
+from .program import Program
+from .state import State
+from .type_request import TypeRequest

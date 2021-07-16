@@ -25,6 +25,11 @@ from management_medical_history_backend.services.models import (
     RelationshipPersonInCharge,
     HcOpenPlace,
     HcTransferTo,
+    TypeRequest,
+    State,
+    Program,
+    ProductionCenter,
+    Ips
 )
 
 # Serializers
@@ -47,6 +52,11 @@ from management_medical_history_backend.services.serializers import (
     RelationshipPersonInChargeSerializer,
     HcOpenPlaceSerializer,
     HcTransferToSerializer,
+    TypeRequestSerializer,
+    StateSerializer,
+    ProgramSerializer,
+    ProductionCenterSerializer,
+    IpsSerializer
 )
 
 
@@ -168,6 +178,54 @@ class TypeDegreeDisabilityView(APIView):
         """Handle HTTP GET request."""
         type_degree_disability = TypeDegreeDisability.objects.all()
         serializer = TypeDegreeDisabilitySerializer(type_degree_disability, many=True)
+        return Response(serializer.data)
+
+
+class TypeRequestView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        type_request = TypeRequest.objects.all()
+        serializer = TypeRequestSerializer(type_request, many=True)
+        return Response(serializer.data)
+
+
+class StateView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        state = State.objects.all()
+        serializer = StateSerializer(state, many=True)
+        return Response(serializer.data)
+
+
+class ProgramView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        program = Program.objects.all()
+        serializer = ProgramSerializer(program, many=True)
+        return Response(serializer.data)
+
+
+class IpsView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        if 'code' in request.GET:
+            ips = Ips.objects.filter(code=request.GET['code']).first()
+            serializer = IpsSerializer(ips)
+        else:
+            ips = Ips.objects.all()
+            serializer = IpsSerializer(ips, many=True)
+        return Response(serializer.data)
+
+
+class ProductionCenterView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        if 'code' in request.GET:
+            production_center = ProductionCenter.objects.filter(code=request.GET['code']).first()
+            serializer = ProductionCenterSerializer(production_center)
+        else:
+            production_center = ProductionCenter.objects.all()
+            serializer = ProductionCenterSerializer(production_center, many=True)
         return Response(serializer.data)
 
 

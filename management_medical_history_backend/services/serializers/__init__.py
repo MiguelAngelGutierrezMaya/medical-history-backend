@@ -16,3 +16,8 @@ from .type_degree_disability_serializer import TypeDegreeDisabilitySerializer
 from .relationship_person_in_charge_serializer import RelationshipPersonInChargeSerializer
 from .hc_open_place_serializer import HcOpenPlaceSerializer
 from .hc_transfer_to_serializer import HcTransferToSerializer
+from .ips_serializer import IpsSerializer
+from .production_center_serializer import ProductionCenterSerializer
+from .program_serializer import ProgramSerializer
+from .state_serializer import StateSerializer
+from .type_request_serializer import TypeRequestSerializer

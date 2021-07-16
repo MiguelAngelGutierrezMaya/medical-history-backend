@@ -17,4 +17,9 @@ from .services_view import (
     RelationshipPersonInChargeView,
     HcOpenPlaceView,
     HcTransferToView,
+    TypeRequestView,
+    StateView,
+    ProgramView,
+    ProductionCenterView,
+    IpsView
 )
