@@ -11,7 +11,7 @@ from management_medical_history_backend.schedules.models import Availability, Ap
 from management_medical_history_backend.users.models import User
 
 # Serializers
-from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer
+from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer, PatientAppointmentSerializer
 
 # Utils
 from management_medical_history_backend.utils.permissions import AccessPermission
@@ -336,3 +336,46 @@ class RescheduleDetailView(APIView):
         except Exception as ex:
             print(ex)
             return Response({'msg': 'El valor de la duración debe ser un número entero'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PatientAppointmentView(APIView):
+    """Add service to the professional"""
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+
+    def post(self, request):
+        """Handle HTTP POST request."""
+        start_date = datetime.strptime(request.data['start_date'].replace("T", " "), '%Y-%m-%d %H:%M:%S')
+        end_date = start_date + timedelta(minutes=int(request.data['appointment_duration']))
+        appointment_serializer = AppointmentSerializer(data={
+            'patient': request.data['patient']['id'],
+            'professional': request.data['professionals'],
+            'start_date': request.data['start_date'],
+            'end_date': end_date,
+            'status': Constants.APPOINTMENT_PAID,
+            'appointment_duration': request.data['appointment_duration'],
+            'title': 'Cita programada, paciente: {} {}'.format(request.data['patient']['firstName'], request.data['patient']['surname']),
+            'description': request.data['observations']
+        })
+        if(appointment_serializer.is_valid()):
+            appointment_serializer.save()
+            patient_appointment_serializer = PatientAppointmentSerializer(data={
+                'user': request.data['user']['id'],
+                'appointment': appointment_serializer.data['id'],
+                'state': request.data['states'],
+                'type_request': request.data['request_type'],
+                'request_datetime': request.data['request_datetime'],
+                'suggested_datetime': request.data['suggested_datetime'],
+                'patient_appointment_uuid': request.data['appointment_id'],
+                'ips': request.data['ips'],
+                'production_code': request.data['production_center'],
+                'sale_document': request.data['sale_document'],
+                'first_time': request.data['first_time'],
+                'programs': request.data['programs']
+            })
+            if(patient_appointment_serializer.is_valid()):
+                patient_appointment_serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response(patient_appointment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(appointment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
