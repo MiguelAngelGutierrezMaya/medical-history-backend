@@ -12,7 +12,8 @@ from management_medical_history_backend.schedules.views import (
     AvailabilitiesRecordsView,
     AvailabilitiesView,
     RescheduleDetailView,
-    PatientAppointmentView
+    PatientAppointmentView,
+    AppointmentPurposeView
 )
 
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path('api/availabilities/', AvailabilitiesRecordsView.as_view(), name='availabilities'),
     path('api/user-availabilities/', AvailabilitiesView.as_view(), name='user_availabilities'),
     path('api/patient-appointments/', PatientAppointmentView.as_view(), name='patient_appointments'),
+    path('api/appointment-purposes/', AppointmentPurposeView.as_view(), name='appointment_purposes'),
     path('api/schedules/', ScheduleRecordsView.as_view(), name='schedules'),
     path('api/reschedule/', RescheduleDetailView.as_view(), name='schedules'),
 ]

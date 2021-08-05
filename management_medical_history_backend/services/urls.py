@@ -25,12 +25,16 @@ from management_medical_history_backend.services.views import (
     TypeDegreeDisabilityView,
     RelationshipPersonInChargeView,
     HcOpenPlaceView,
-    HcTransferToView,
     TypeRequestView,
     StateView,
     ProgramView,
     ProductionCenterView,
-    IpsView
+    IpsView,
+    DiagnosticAidView,
+    ExternalCauseView,
+    MedicineView,
+    PresentationView,
+    SpecialistView
 )
 
 
@@ -53,6 +57,11 @@ urlpatterns = [
     path('api/type-request/', TypeRequestView.as_view(), name='type_request'),
     path('api/state/', StateView.as_view(), name='state'),
     path('api/program/', ProgramView.as_view(), name='program'),
+    path('api/diagnostic-aids/', DiagnosticAidView.as_view(), name='diagnostic_aids'),
+    path('api/external-cause/', ExternalCauseView.as_view(), name='external_cause'),
+    path('api/medicine/', MedicineView.as_view(), name='medicine'),
+    path('api/presentations/', PresentationView.as_view(), name='presentations'),
+    path('api/specialists/', SpecialistView.as_view(), name='specialists'),
     path('api/production-center/', ProductionCenterView.as_view(), name='production_center'),
     path('api/ips/', IpsView.as_view(), name='ips'),
     path('api/relationship-person-in-charge/', RelationshipPersonInChargeView.as_view(), name='relationship_person_in_charge'),

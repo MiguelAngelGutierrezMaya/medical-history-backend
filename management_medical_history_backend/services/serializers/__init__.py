@@ -21,3 +21,8 @@ from .production_center_serializer import ProductionCenterSerializer
 from .program_serializer import ProgramSerializer
 from .state_serializer import StateSerializer
 from .type_request_serializer import TypeRequestSerializer
+from .diagnostic_aid_serializer import DiagnosticAidSerializer
+from .external_cause_serializer import ExternalCauseSerializer
+from .medicine_serializer import MedicineSerializer
+from .presentation_serializer import PresentationSerializer
+from .specialist_serializer import SpecialistSerializer

@@ -9,3 +9,8 @@ from .state_admin import StateAdmin
 from .program_admin import ProgramAdmin
 from .production_center_admin import ProductionCenterAdmin
 from .ips_admin import IpsAdmin
+from .diagnostic_aids_admin import DiagnosticAidAdmin
+from .external_cause_admin import ExternalCauseAdmin
+from .medicine_admin import MedicineAdmin
+from .presentation_admin import PresentationAdmin
+from .specialist_admin import SpecialistAdmin

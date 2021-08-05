@@ -29,7 +29,13 @@ from management_medical_history_backend.services.models import (
     State,
     Program,
     ProductionCenter,
-    Ips
+    Ips,
+    DiagnosticAid,
+    ExternalCause,
+    Medicine,
+    Presentation,
+    Specialist,
+    presentation
 )
 
 # Serializers
@@ -56,7 +62,12 @@ from management_medical_history_backend.services.serializers import (
     StateSerializer,
     ProgramSerializer,
     ProductionCenterSerializer,
-    IpsSerializer
+    IpsSerializer,
+    DiagnosticAidSerializer,
+    ExternalCauseSerializer,
+    MedicineSerializer,
+    PresentationSerializer,
+    SpecialistSerializer
 )
 
 
@@ -202,6 +213,46 @@ class ProgramView(APIView):
         """Handle HTTP GET request."""
         program = Program.objects.all()
         serializer = ProgramSerializer(program, many=True)
+        return Response(serializer.data)
+
+
+class DiagnosticAidView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        diagnosticAids = DiagnosticAid.objects.all()
+        serializer = DiagnosticAidSerializer(diagnosticAids, many=True)
+        return Response(serializer.data)
+
+
+class ExternalCauseView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        externalCauses = ExternalCause.objects.all()
+        serializer = ExternalCauseSerializer(externalCauses, many=True)
+        return Response(serializer.data)
+
+
+class MedicineView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        medicines = Medicine.objects.all()
+        serializer = MedicineSerializer(medicines, many=True)
+        return Response(serializer.data)
+
+
+class PresentationView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        presentations = Presentation.objects.all()
+        serializer = PresentationSerializer(presentations, many=True)
+        return Response(serializer.data)
+
+
+class SpecialistView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        specialists = Specialist.objects.all()
+        serializer = SpecialistSerializer(specialists, many=True)
         return Response(serializer.data)
 
 

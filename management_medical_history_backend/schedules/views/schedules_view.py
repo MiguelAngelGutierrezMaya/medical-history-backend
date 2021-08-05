@@ -7,11 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # Models
-from management_medical_history_backend.schedules.models import Availability, Appointment
+from management_medical_history_backend.schedules.models import Availability, Appointment, AppointmentPurpose, appointment
 from management_medical_history_backend.users.models import User
 
 # Serializers
-from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer, PatientAppointmentSerializer
+from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer, PatientAppointmentSerializer, AppointmentPurposeSerializer
 
 # Utils
 from management_medical_history_backend.utils.permissions import AccessPermission
@@ -379,3 +379,11 @@ class PatientAppointmentView(APIView):
                 return Response(patient_appointment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(appointment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AppointmentPurposeView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        appointmentPurposes = AppointmentPurpose.objects.all()
+        serializer = AppointmentPurposeSerializer(appointmentPurposes, many=True)
+        return Response(serializer.data)

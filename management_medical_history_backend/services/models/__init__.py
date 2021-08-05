@@ -21,3 +21,8 @@ from .production_center import ProductionCenter
 from .program import Program
 from .state import State
 from .type_request import TypeRequest
+from .external_cause import ExternalCause
+from .diagnostic_aid import DiagnosticAid
+from .specialist import Specialist
+from .medicine import Medicine
+from .presentation import Presentation

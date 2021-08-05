@@ -1,3 +1,4 @@
 from .availability_serializer import AvailabilitySerializer
 from .appointment_serializer import AppointmentSerializer
 from .patient_appointment_serializer import PatientAppointmentSerializer
+from .appointment_purpose_serializer import AppointmentPurposeSerializer

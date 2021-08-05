@@ -21,5 +21,10 @@ from .services_view import (
     StateView,
     ProgramView,
     ProductionCenterView,
-    IpsView
+    IpsView,
+    DiagnosticAidView,
+    ExternalCauseView,
+    MedicineView,
+    PresentationView,
+    SpecialistView
 )
