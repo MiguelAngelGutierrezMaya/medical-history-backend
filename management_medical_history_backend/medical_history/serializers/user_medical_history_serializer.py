@@ -34,20 +34,60 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
 
     itemsValue = serializers.ListField()
     diagnosesCategories = serializers.ListField()
+    specialists = serializers.ListField()
+    diagnosticAids = serializers.ListField()
+    medicines = serializers.ListField()
     date = serializers.DateTimeField()
     medical_history_id = serializers.IntegerField()
     professional_id = serializers.IntegerField()
     user_id = serializers.IntegerField()
+    appointmentPurpose = serializers.CharField()
+    externalCause = serializers.CharField()
 
     def create(self, data):
         aux = data
         itemsValue = data.pop('itemsValue')
         diagnosesCategories = data.pop('diagnosesCategories')
+        specialists = data.pop('specialists')
+        diagnosticAids = data.pop('diagnosticAids')
+        medicines = data.pop('medicines')
+        appointmentPurpose = data.pop('appointmentPurpose')
+        externalCause = data.pop('externalCause')
         user_medical_history = UserMedicalHistory.objects.create(**data)
+
+        ItemValue.objects.create(
+            value=appointmentPurpose,
+            type='appointmentPurposes',
+            user_medical_history_id=user_medical_history.id
+        )
+        ItemValue.objects.create(
+            value=externalCause,
+            type='externalCauses',
+            user_medical_history_id=user_medical_history.id
+        )
+
         for diagnoseCategory in diagnosesCategories:
             ItemValue.objects.create(
                 value=diagnoseCategory,
                 type='diagnosesCategories',
+                user_medical_history_id=user_medical_history.id
+            )
+        for specialist in specialists:
+            ItemValue.objects.create(
+                value=specialist,
+                type='specialists',
+                user_medical_history_id=user_medical_history.id
+            )
+        for diagnosticAid in diagnosticAids:
+            ItemValue.objects.create(
+                value=diagnosticAid,
+                type='diagnosticAids',
+                user_medical_history_id=user_medical_history.id
+            )
+        for medicine in medicines:
+            ItemValue.objects.create(
+                value=medicine,
+                type='medicines',
                 user_medical_history_id=user_medical_history.id
             )
         for itemValue in itemsValue:
@@ -60,6 +100,11 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
 
         aux['itemsValue'] = itemsValue
         aux['diagnosesCategories'] = diagnosesCategories
+        aux['specialists'] = specialists
+        aux['diagnosticAids'] = diagnosticAids
+        aux['medicines'] = medicines
+        aux['appointmentPurpose'] = appointmentPurpose
+        aux['externalCause'] = externalCause
         return aux
 
     class Meta:
@@ -68,6 +113,11 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
         fields = (
             'itemsValue',
             'diagnosesCategories',
+            'specialists',
+            'diagnosticAids',
+            'medicines',
+            'appointmentPurpose',
+            'externalCause',
             'date',
             'medical_history_id',
             'professional_id',
