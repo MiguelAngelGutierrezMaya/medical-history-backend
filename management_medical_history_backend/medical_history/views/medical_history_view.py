@@ -1,7 +1,7 @@
 """Users views."""
 
 # Django REST Framework
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -79,6 +79,21 @@ class MedicalHistoryConfigDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except MedicalHistory.DoesNotExist:
             return Response({'msg': 'No se econtró la Historia Clínica solicitada'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportUserMedicalHistoryView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        kws = {'user__profile__nuip': request.GET['document']}
+        if 'date_init' in request.GET:
+            kws['date__gte'] = request.GET['date_init']
+        if 'date_end' in request.GET:
+            kws['date__lte'] = request.GET['date_end']
+        list = UserMedicalHistory.objects.filter(**kws)
+        serializer = UserMedicalHistorySerializer(list, many=True)
+        return Response(serializer.data)
 
 
 class UserMedicalHistoryView(APIView):

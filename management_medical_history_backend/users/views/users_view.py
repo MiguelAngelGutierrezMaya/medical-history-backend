@@ -9,7 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 # Django REST Framework
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -124,6 +124,19 @@ class ConfirmTokenView(APIView):
                 except Exception as ex:
                     return Response({'msg': str(ex)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({'msg': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportUserView(APIView):
+    
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        kws = {'created__gte': request.GET['date_init'], 'created__lte': request.GET['date_end']}
+        if 'document' in request.GET:
+            kws['profile__nuip'] = request.GET['document']
+        list = User.objects.filter(**kws)
+        serializer = UserSerializer(list, many=True)
+        return Response(serializer.data)
 
 
 class UserView(APIView):

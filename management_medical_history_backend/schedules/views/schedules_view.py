@@ -1,17 +1,29 @@
 """Users views."""
 
 # Django REST Framework
+from management_medical_history_backend.schedules.models.patient_appointment import PatientAppointment
 from re import L
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # Models
-from management_medical_history_backend.schedules.models import Availability, Appointment, AppointmentPurpose, appointment
+from management_medical_history_backend.schedules.models import (
+    Availability,
+    Appointment,
+    AppointmentPurpose,
+    PatientAppointment
+)
 from management_medical_history_backend.users.models import User
 
 # Serializers
-from management_medical_history_backend.schedules.serializers import AvailabilitySerializer, AppointmentSerializer, PatientAppointmentSerializer, AppointmentPurposeSerializer
+from management_medical_history_backend.schedules.serializers import (
+    AvailabilitySerializer,
+    AppointmentSerializer,
+    PatientAppointmentSerializer,
+    AppointmentPurposeSerializer,
+    FullPatientAppointmentSerializer
+)
 
 # Utils
 from management_medical_history_backend.utils.permissions import AccessPermission
@@ -336,6 +348,20 @@ class RescheduleDetailView(APIView):
         except Exception as ex:
             print(ex)
             return Response({'msg': 'El valor de la duración debe ser un número entero'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportPatientAppointmentView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        kws = {
+            'request_datetime__gte': request.GET['date_init'],
+            'request_datetime__lte': request.GET['date_end']
+        }
+        list = PatientAppointment.objects.filter(**kws)
+        serializer = FullPatientAppointmentSerializer(list, many=True)
+        return Response(serializer.data)
 
 
 class PatientAppointmentView(APIView):

@@ -4,5 +4,6 @@ from .schedules_view import (
     AvailabilitiesView,
     RescheduleDetailView,
     PatientAppointmentView,
-    AppointmentPurposeView
+    AppointmentPurposeView,
+    ReportPatientAppointmentView
 )
