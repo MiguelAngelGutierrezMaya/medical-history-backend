@@ -134,6 +134,7 @@ class ReportUserView(APIView):
         kws = {'created__gte': request.GET['date_init'], 'created__lte': request.GET['date_end']}
         if 'document' in request.GET:
             kws['profile__nuip'] = request.GET['document']
+        print(request.GET)
         list = User.objects.filter(**kws)
         serializer = UserSerializer(list, many=True)
         return Response(serializer.data)

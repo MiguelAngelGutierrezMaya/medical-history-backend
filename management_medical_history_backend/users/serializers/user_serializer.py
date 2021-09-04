@@ -46,3 +46,16 @@ class UserSerializer(serializers.ModelSerializer):
             'role',
             'profile',
         )
+
+
+class OnlyUserProfileSerializer(serializers.ModelSerializer):
+    """User model serializer."""
+    profile = ProfileSerializer(required=False)
+
+    class Meta:
+        """Meta class."""
+        model = User
+        fields = (
+            'id',
+            'profile',
+        )

@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 # Model
 from management_medical_history_backend.schedules.models import Appointment
-from management_medical_history_backend.users.serializers import ProfileSerializer
+from management_medical_history_backend.users.serializers import (OnlyUserProfileSerializer)
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class FullAppointmentSerializer(serializers.ModelSerializer):
     """FullAppointmentSerializer model serializer."""
 
-    patient = ProfileSerializer(read_only=True)
+    patient = OnlyUserProfileSerializer(read_only=True)
 
     class Meta:
         """Meta class."""
