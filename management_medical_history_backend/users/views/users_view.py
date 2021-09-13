@@ -127,14 +127,16 @@ class ConfirmTokenView(APIView):
 
 
 class ReportUserView(APIView):
-    
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        kws = {'created__gte': request.GET['date_init'], 'created__lte': request.GET['date_end']}
+        kws = {}
+        if 'date_init' in request.GET and 'date_end' in request.GET:
+            kws['created__gte'] = request.GET['date_init']
+            kws['created__lte'] = request.GET['date_end']
         if 'document' in request.GET:
             kws['profile__nuip'] = request.GET['document']
-        print(request.GET)
         list = User.objects.filter(**kws)
         serializer = UserSerializer(list, many=True)
         return Response(serializer.data)
