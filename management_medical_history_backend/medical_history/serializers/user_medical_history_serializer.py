@@ -37,6 +37,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
     specialists = serializers.ListField()
     diagnosticAids = serializers.ListField()
     medicines = serializers.ListField()
+    exams = serializers.ListField()
     date = serializers.DateTimeField()
     medical_history_id = serializers.IntegerField()
     professional_id = serializers.IntegerField()
@@ -51,6 +52,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
         specialists = data.pop('specialists')
         diagnosticAids = data.pop('diagnosticAids')
         medicines = data.pop('medicines')
+        exams = data.pop('exams')
         appointmentPurpose = data.pop('appointmentPurpose')
         externalCause = data.pop('externalCause')
         user_medical_history = UserMedicalHistory.objects.create(**data)
@@ -90,6 +92,12 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
                 type='medicines',
                 user_medical_history_id=user_medical_history.id
             )
+        for exam in exams:
+            ItemValue.objects.create(
+                value=exam,
+                type='exams',
+                user_medical_history_id=user_medical_history.id
+            )
         for itemValue in itemsValue:
             ItemValue.objects.create(
                 value=itemValue['value'],
@@ -103,6 +111,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
         aux['specialists'] = specialists
         aux['diagnosticAids'] = diagnosticAids
         aux['medicines'] = medicines
+        aux['exams'] = exams
         aux['appointmentPurpose'] = appointmentPurpose
         aux['externalCause'] = externalCause
         return aux
@@ -116,6 +125,7 @@ class UserMedicalHistorySignUpSerializer(serializers.ModelSerializer):
             'specialists',
             'diagnosticAids',
             'medicines',
+            'exams',
             'appointmentPurpose',
             'externalCause',
             'date',

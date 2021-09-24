@@ -1,7 +1,7 @@
 """Users views."""
 
 # Django
-from management_medical_history_backend.users.serializers.user_serializer import UserSerializer
+from management_medical_history_backend.users.serializers import (UserSerializer, LendingSerializer)
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
@@ -15,7 +15,7 @@ from rest_framework.response import Response
 
 # Models
 from management_medical_history_backend.users.models import (
-    User, Token, Profile,
+    User, Token, Profile, Lending,
 )
 
 # Utilities
@@ -150,6 +150,15 @@ class UserView(APIView):
         else:
             user = User.objects.all()
         serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+
+
+class LendingView(APIView):
+
+    def get(self, request):
+        """Handle HTTP GET request."""
+        lendings = Lending.objects.filter(is_active=True)
+        serializer = LendingSerializer(lendings, many=True)
         return Response(serializer.data)
 
 

@@ -34,7 +34,8 @@ from management_medical_history_backend.services.views import (
     ExternalCauseView,
     MedicineView,
     PresentationView,
-    SpecialistView
+    SpecialistView,
+    ExamView
 )
 
 
@@ -60,6 +61,7 @@ urlpatterns = [
     path('api/diagnostic-aids/', DiagnosticAidView.as_view(), name='diagnostic_aids'),
     path('api/external-cause/', ExternalCauseView.as_view(), name='external_cause'),
     path('api/medicine/', MedicineView.as_view(), name='medicine'),
+    path('api/exam/', ExamView.as_view(), name='exam'),
     path('api/presentations/', PresentationView.as_view(), name='presentations'),
     path('api/specialists/', SpecialistView.as_view(), name='specialists'),
     path('api/production-center/', ProductionCenterView.as_view(), name='production_center'),

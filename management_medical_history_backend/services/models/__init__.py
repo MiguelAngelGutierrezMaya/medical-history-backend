@@ -26,3 +26,4 @@ from .diagnostic_aid import DiagnosticAid
 from .specialist import Specialist
 from .medicine import Medicine
 from .presentation import Presentation
+from .exam import Exam

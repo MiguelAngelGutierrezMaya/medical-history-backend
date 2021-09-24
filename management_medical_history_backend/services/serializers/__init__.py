@@ -26,3 +26,4 @@ from .external_cause_serializer import ExternalCauseSerializer
 from .medicine_serializer import MedicineSerializer
 from .presentation_serializer import PresentationSerializer
 from .specialist_serializer import SpecialistSerializer
+from .exam_serializer import ExamSerializer

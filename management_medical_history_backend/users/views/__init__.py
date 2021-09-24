@@ -4,5 +4,6 @@ from .users_view import (
     ConfirmTokenView,
     IndexCardHolderView,
     UserView,
-    ReportUserView
+    ReportUserView,
+    LendingView
 )

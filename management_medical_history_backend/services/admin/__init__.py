@@ -14,3 +14,4 @@ from .external_cause_admin import ExternalCauseAdmin
 from .medicine_admin import MedicineAdmin
 from .presentation_admin import PresentationAdmin
 from .specialist_admin import SpecialistAdmin
+from .exam_admin import ExamAdmin

@@ -35,7 +35,7 @@ from management_medical_history_backend.services.models import (
     Medicine,
     Presentation,
     Specialist,
-    presentation
+    Exam
 )
 
 # Serializers
@@ -67,7 +67,8 @@ from management_medical_history_backend.services.serializers import (
     ExternalCauseSerializer,
     MedicineSerializer,
     PresentationSerializer,
-    SpecialistSerializer
+    SpecialistSerializer,
+    ExamSerializer
 )
 
 
@@ -253,6 +254,14 @@ class SpecialistView(APIView):
         """Handle HTTP GET request."""
         specialists = Specialist.objects.all()
         serializer = SpecialistSerializer(specialists, many=True)
+        return Response(serializer.data)
+
+
+class ExamView(APIView):
+    def get(self, request):
+        """Handle HTTP GET request."""
+        exams = Exam.objects.all()
+        serializer = ExamSerializer(exams, many=True)
         return Response(serializer.data)
 
 

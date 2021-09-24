@@ -26,5 +26,6 @@ from .services_view import (
     ExternalCauseView,
     MedicineView,
     PresentationView,
-    SpecialistView
+    SpecialistView,
+    ExamView
 )

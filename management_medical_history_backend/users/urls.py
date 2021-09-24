@@ -16,12 +16,14 @@ from management_medical_history_backend.users.views import (
     ConfirmTokenView,
     IndexCardHolderView,
     UserView,
-    ReportUserView
+    ReportUserView,
+    LendingView
 )
 
 
 urlpatterns = [
     path('api/user/', UserView.as_view(), name='user'),
+    path('api/lending/', LendingView.as_view(), name='lending'),
     path('api/report-users/', ReportUserView.as_view(), name='user'),
     path('api/login/', UserLoginTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
