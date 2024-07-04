@@ -17,6 +17,8 @@ services:
     ports:
       - "27017:27017"
     command: mongod
+    networks:
+      - containers
 
   django: &django
     build:
@@ -33,7 +35,13 @@ services:
       - "9011:8000"
     depends_on:
       - mongo
+    networks:
+      - containers
 
-    environment:
-      - "VIRTUAL_HOST=api.siellano-dev.com"
+    # environment:
+    #   - "VIRTUAL_HOST=api.siellano-dev.com"
     command: /start
+
+networks:
+  containers:
+    external: true
